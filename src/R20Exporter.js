@@ -258,7 +258,7 @@ class R20Exporter {
                 setTimeout(makeCB(array, id, page), 1000)
             }
         }
-        this.console.log("Finished parsing pages.")
+        this.console.log("Finished parsing pages: " + array.length)
         return array
     }
 
@@ -288,17 +288,26 @@ class R20Exporter {
         data.controlledby = data.controlledby.split(",")
         if (data.bio != "") {
             delete data.bio
-            const bio_id = this.newPendingOperation()
+            // NON GM: Disable Bio PendingOperation, callback broken
+            data.bio = ""
+            //const bio_id = this.newPendingOperation()
+            const bio_id = Math.random().toString(36)
             character._getLatestBlob("bio", (blob) => this.updateModel(data, "bio", blob, bio_id, cb))
         }
         if (data.gmnotes != "") {
             delete data.gmnotes
-            const gmnotes_id = this.newPendingOperation()
+            // NON GM: Disable GMNotes PendingOperation, callback broken
+            data.gmnotes = ""
+            //const gmnotes_id = this.newPendingOperation()
+            const gmnotes_id = Math.random().toString(36)
             character._getLatestBlob("gmnotes", (blob) => this.updateModel(data, "gmnotes", blob, gmnotes_id, cb))
         }
         if (data.defaulttoken != "") {
             delete data.defaulttoken
-            const token_id = this.newPendingOperation()
+            // NON GM: Disable DefaultToken PendingOperation, callback broken
+            data.defaulttoken = ""
+            //const token_id = this.newPendingOperation()
+            const token_id = Math.random().toString(36)
             character._getLatestBlob("defaulttoken", (blob) => this.updateModel(data, "defaulttoken", blob, token_id, cb))
         }
         data.attributes = character.attribs.toJSON()
@@ -311,7 +320,7 @@ class R20Exporter {
         for (let character of characters.models) {
             array.push(this.parseCharacter(character, cb))
         }
-        this.console.log("Finished parsing characters.")
+        this.console.log("Finished parsing characters: " + array.length)
         return array
     }
 
@@ -321,12 +330,18 @@ class R20Exporter {
         data.controlledby = data.controlledby.split(",")
         if (data.notes != "") {
             delete data.notes
-            const notes_id = this.newPendingOperation()
+            // NON GM: Disable Notes PendingOperation, callback broken
+            data.notes = ""
+            //const notes_id = this.newPendingOperation()
+            const notes_id = Math.random().toString(36)
             handout._getLatestBlob("notes", (blob) => this.updateModel(data, "notes", blob, notes_id, cb))
         }
         if (data.gmnotes != "") {
             delete data.gmnotes
-            const gmnotes_id = this.newPendingOperation()
+            // NON GM: Disable GNNotes PendingOperation, callback broken
+            data.gmnotes = ""
+            //const gmnotes_id = this.newPendingOperation()
+            const gmnotes_id = Math.random().toString(36)
             handout._getLatestBlob("gmnotes", (blob) => this.updateModel(data, "gmnotes", blob, gmnotes_id, cb))
         }
         return data
@@ -337,7 +352,7 @@ class R20Exporter {
         for (let handout of handouts.models) {
             array.push(this.parseHandout(handout, cb))
         }
-        this.console.log("Finished parsing handouts.")
+        this.console.log("Finished parsing handouts: " + array.length)
         return array
     }
 
@@ -366,7 +381,7 @@ class R20Exporter {
         let array = []
         for (let player of players.models)
             array.push(this.parsePlayer(player))
-        this.console.log("Finished parsing players.")
+        this.console.log("Finished parsing players: " + array.length)
         return array
     }
 
@@ -378,7 +393,7 @@ class R20Exporter {
                 macro.player_id = player.id
             array.push(...macros)
         }
-        this.console.log("Finished parsing Macros.")
+        this.console.log("Finished parsing Macros: " + array.length)
         return array
     }
 
@@ -391,7 +406,7 @@ class R20Exporter {
             data.discardPile = data.discardPile.split(",")
             array.push(data)
         }
-        this.console.log("Finished parsing Decks.")
+        this.console.log("Finished parsing Decks: " + array.length)
         return array
     }
 
@@ -402,7 +417,7 @@ class R20Exporter {
             data.items = table.tableitems.toJSON()
             array.push(data)
         }
-        this.console.log("Finished parsing Rollable Tables.")
+        this.console.log("Finished parsing Rollable Tables: " + array.length)
         return array
     }
 
@@ -437,6 +452,10 @@ class R20Exporter {
     }
 
     _fetchChatArchive(obj, done) {
+        // Non GM: Disables collection of Chat Archive
+        obj.chat_archive = {}
+        return
+
         const id = this.newPendingOperation()
         const errorcb = () => {
             if (this.completedOperation(id) && done)

@@ -1,3 +1,6 @@
+MODIFIED FOR NON GM - disables parseCharacter() and parseHandout().  Also disables ChatArchive, because I don't ever need that.
+
+
 This extension allows you to export a Roll 20 campaign and all of its assets into a ZIP file for backup/archiving purposes.
 
 
